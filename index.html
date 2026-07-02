@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Coffee?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --espresso:#150c08;
+    --espresso-2:#20130c;
+    --panel:#2a1a12;
+    --panel-edge:#3c271c;
+    --amber:#f0b86e;
+    --amber-bright:#ffd79a;
+    --caramel:#e8915c;
+    --rose:#e58a9a;
+    --cream:#f6ecdd;
+    --muted:#bda08b;
+    --shadow:rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:"Inter",system-ui,sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(120% 90% at 50% -10%, #3a2114 0%, #1d100a 45%, var(--espresso) 100%);
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ambient warm light pool */
+  .glow{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(40% 38% at 50% 42%, rgba(240,184,110,.22), rgba(240,184,110,0) 70%);
+    animation:breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe{0%,100%{opacity:.75}50%{opacity:1}}
+
+  /* drifting warm motes */
+  .motes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .mote{position:absolute;bottom:-20px;width:6px;height:6px;border-radius:50%;
+    background:radial-gradient(circle,var(--amber-bright),rgba(255,215,154,0));
+    opacity:0;animation:rise linear infinite}
+  @keyframes rise{
+    0%{transform:translateY(0) scale(.6);opacity:0}
+    12%{opacity:.7}
+    100%{transform:translateY(-105vh) scale(1.1);opacity:0}
+  }
+
+  .stage{position:relative;z-index:2;width:min(560px,92vw);padding:24px;text-align:center}
+
+  /* ---- coffee cup signature ---- */
+  .cup-wrap{position:relative;height:150px;margin:0 auto 6px;display:flex;justify-content:center;align-items:flex-end}
+  .steam{position:absolute;top:-2px;left:50%;transform:translateX(-50%);display:flex;gap:11px}
+  .steam span{display:block;width:5px;height:46px;border-radius:6px;
+    background:linear-gradient(to top,rgba(246,236,221,0),rgba(246,236,221,.55));
+    filter:blur(1px);transform-origin:bottom;opacity:0;animation:steam 3.4s ease-in-out infinite}
+  .steam span:nth-child(2){animation-delay:.7s;height:58px}
+  .steam span:nth-child(3){animation-delay:1.4s}
+  @keyframes steam{
+    0%{opacity:0;transform:translateY(6px) scaleY(.6) translateX(0)}
+    35%{opacity:.8}
+    100%{opacity:0;transform:translateY(-30px) scaleY(1.15) translateX(6px)}
+  }
+  svg.cup{width:118px;height:auto;filter:drop-shadow(0 14px 22px var(--shadow))}
+
+  .eyebrow{font-family:"Inter";font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--amber);opacity:.85;margin:14px 0 6px}
+  h1{font-family:"Fraunces";font-weight:500;font-size:clamp(2rem,7vw,3.1rem);line-height:1.06;
+    margin:.1em 0 .2em;letter-spacing:-.01em}
+  h1 .accent{font-style:italic;color:var(--amber-bright)}
+  .sub{color:var(--muted);font-size:1.02rem;max-width:30ch;margin:0 auto 26px;line-height:1.5}
+
+  /* ---- buttons ---- */
+  .btns{position:relative;display:flex;gap:16px;justify-content:center;align-items:center;min-height:62px;flex-wrap:wrap}
+  button{font-family:"Inter";font-weight:600;font-size:1.02rem;cursor:pointer;border:0;
+    border-radius:999px;padding:15px 30px;transition:transform .15s ease,box-shadow .2s ease,background .2s ease}
+  .yes{color:#2a1505;background:linear-gradient(180deg,var(--amber-bright),var(--caramel));
+    box-shadow:0 10px 26px rgba(232,145,92,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+  .yes:hover{transform:translateY(-2px)}
+  .yes:active{transform:translateY(0)}
+  .no{color:var(--cream);background:#4a3324;border:1.5px solid #74543d;
+    box-shadow:0 6px 16px rgba(0,0,0,.35);
+    transition:left .35s cubic-bezier(.34,1.4,.5,1),top .35s cubic-bezier(.34,1.4,.5,1),transform .15s ease,background .2s ease}
+  .no.loose{position:fixed;z-index:50;margin:0}
+  .no:hover{background:#5a3f2c;border-color:var(--rose)}
+
+  /* ---- form card ---- */
+  .card{position:relative;z-index:2;width:min(460px,92vw);background:linear-gradient(180deg,var(--panel),#241509);
+    border:1px solid var(--panel-edge);border-radius:22px;padding:30px 26px 26px;
+    box-shadow:0 30px 60px var(--shadow);text-align:left}
+  .card h2{font-family:"Fraunces";font-weight:500;font-size:1.7rem;margin:0 0 4px;text-align:center}
+  .card .lead{color:var(--muted);text-align:center;margin:0 0 22px;font-size:.96rem}
+  .field{margin-bottom:16px}
+  label{display:block;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:7px}
+  input{width:100%;font-family:"Inter";font-size:1rem;color:var(--cream);
+    background:#1a0f09;border:1px solid var(--panel-edge);border-radius:12px;padding:13px 14px;outline:none;
+    transition:border-color .18s ease,box-shadow .18s ease}
+  input::placeholder{color:#7d6655}
+  input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(240,184,110,.18)}
+  input[type="date"],input[type="time"]{color-scheme:dark}
+  .send{width:100%;margin-top:8px;color:#2a1505;
+    background:linear-gradient(180deg,var(--amber-bright),var(--caramel));
+    box-shadow:0 10px 26px rgba(232,145,92,.4)}
+  .send:hover{transform:translateY(-2px)}
+  .err{color:var(--rose);font-size:.85rem;min-height:1.1em;text-align:center;margin-top:10px}
+
+  /* ---- confirmation ---- */
+  .recap{margin:18px 0 4px;border-top:1px dashed var(--panel-edge);border-bottom:1px dashed var(--panel-edge);padding:16px 0}
+  .recap .row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:1rem}
+  .recap .row span:first-child{color:var(--muted)}
+  .recap .row span:last-child{font-weight:600}
+
+  /* state transitions */
+  .view{animation:fadeUp .55s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hidden{display:none !important}
+
+  /* falling celebration pieces */
+  .confetti{position:fixed;top:-20px;z-index:40;pointer-events:none;font-size:18px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
+
+  @media (prefers-reduced-motion:reduce){
+    .glow,.steam span,.mote{animation:none}
+    .view{animation:none}
+    .no{transition:none}
+  }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="motes" id="motes" aria-hidden="true"></div>
+
+  <!-- VIEW 1: the ask -->
+  <main class="stage view" id="ask">
+    <div class="cup-wrap">
+      <div class="steam"><span></span><span></span><span></span></div>
+      <svg class="cup" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="mug" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fbf2e4"/><stop offset="1" stop-color="#d9c3aa"/>
+          </linearGradient>
+          <linearGradient id="brew" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#6b3d23"/><stop offset="1" stop-color="#3a200f"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="60" cy="100" rx="38" ry="7" fill="#000" opacity=".35"/>
+        <path d="M88 40c10 0 17 6 17 15s-8 15-18 15" stroke="url(#mug)" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M22 38h66v22c0 18-13 30-33 30S22 78 22 60V38Z" fill="url(#mug)"/>
+        <path d="M27 43h56v15c0 4-2 6-6 6H33c-4 0-6-2-6-6V43Z" fill="url(#brew)"/>
+        <ellipse cx="55" cy="49" rx="22" ry="4" fill="#7a4a2c" opacity=".5"/>
+      </svg>
+    </div>
+
+    <p class="eyebrow">a small question</p>
+    <h1>Will you meet me for <span class="accent">coffee</span>?</h1>
+    <p class="sub" id="subline">No big plans. Just you, me, and something warm.</p>
+
+    <div class="btns" id="btns">
+      <button class="yes" id="yesBtn">Yes, I'd love to</button>
+      <button class="no" id="noBtn">No</button>
+    </div>
+  </main>
+
+  <!-- VIEW 2: the plan -->
+  <section class="card view hidden" id="planView">
+    <h2>Yay — let's plan it ☕</h2>
+    <p class="lead">Pick a day, a time, and a spot.</p>
+
+    <div class="field">
+      <label for="date">Which day?</label>
+      <input type="date" id="date">
+    </div>
+    <div class="field">
+      <label for="time">What time?</label>
+      <input type="time" id="time">
+    </div>
+    <div class="field">
+      <label for="place">Where to? (coffee shop)</label>
+      <input type="text" id="place" placeholder="e.g. Crimson Cup, Banani" autocomplete="off">
+    </div>
+
+    <button class="send" id="sendBtn">Send it 💌</button>
+    <p class="err" id="err"></p>
+  </section>
+
+  <!-- VIEW 3: confirmation -->
+  <section class="card view hidden" id="doneView">
+    <h2>It's a date 💛</h2>
+    <p class="lead">I'll be counting down.</p>
+    <div class="recap">
+      <div class="row"><span>Day</span><span id="rDate">—</span></div>
+      <div class="row"><span>Time</span><span id="rTime">—</span></div>
+      <div class="row"><span>Place</span><span id="rPlace">—</span></div>
+    </div>
+  </section>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     SET THIS to your email to receive her answer in your inbox.
+     Leave it "" if you're only running the local server.py.
+     e.g. var NOTIFY_EMAIL = "you@gmail.com";
+     ========================================================= */
+  var NOTIFY_EMAIL = "papansaha443@gmail.com";
+
+  /* ----- ambient motes ----- */
+  var motes = document.getElementById('motes');
+  for (var i=0;i<14;i++){
+    var m=document.createElement('div'); m.className='mote';
+    m.style.left=(Math.random()*100)+'%';
+    m.style.animationDuration=(9+Math.random()*9)+'s';
+    m.style.animationDelay=(-Math.random()*12)+'s';
+    var s=.5+Math.random()*1.4; m.style.transform='scale('+s+')';
+    motes.appendChild(m);
+  }
+
+  /* ----- the evasive NO button ----- */
+  var noBtn=document.getElementById('noBtn');
+  var yesBtn=document.getElementById('yesBtn');
+  var subline=document.getElementById('subline');
+  var dodges=0;
+  var taunts=[
+    "Are you sure? It's just coffee.",
+    "The 'No' button is feeling shy today.",
+    "It keeps running. Maybe it's a sign.",
+    "Okay it REALLY doesn't want you to.",
+    "Yes is right there, and so much comfier.",
+    "Plot twist: No was never an option."
+  ];
+
+  function flee(e){
+    if(e){ e.preventDefault(); }
+    if(!noBtn.classList.contains('loose')){
+      var r=noBtn.getBoundingClientRect();
+      noBtn.style.width=r.width+'px';
+      noBtn.style.height=r.height+'px';
+      noBtn.classList.add('loose');
+      // Move it out to <body> so position:fixed is relative to the window,
+      // not the animated (transformed) #ask section.
+      document.body.appendChild(noBtn);
+    }
+    var pad=14;
+    var w=noBtn.offsetWidth || 80, h=noBtn.offsetHeight || 46;
+    var maxX=Math.max(pad, window.innerWidth - w - pad);
+    var maxY=Math.max(pad, window.innerHeight - h - pad);
+    var x=pad+Math.random()*(maxX-pad);
+    var y=pad+Math.random()*(maxY-pad);
+    // hard clamp — never let it leave the visible window
+    x=Math.min(Math.max(pad, x), maxX);
+    y=Math.min(Math.max(pad, y), maxY);
+    noBtn.style.left=x+'px';
+    noBtn.style.top=y+'px';
+
+    dodges++;
+    if(dodges<=taunts.length){ subline.textContent=taunts[dodges-1]; }
+    var grow=Math.min(1+dodges*0.04,1.22);
+    yesBtn.style.transform='scale('+grow+')';
+  }
+
+  noBtn.addEventListener('mouseenter',flee);
+  noBtn.addEventListener('pointerdown',flee);   /* mobile/tap */
+  noBtn.addEventListener('touchstart',flee,{passive:false});
+  noBtn.addEventListener('click',function(e){ e.preventDefault(); flee(); });
+
+  window.addEventListener('resize',function(){
+    if(!noBtn.classList.contains('loose')) return;
+    var pad=14, w=noBtn.offsetWidth, h=noBtn.offsetHeight;
+    var maxX=Math.max(pad, window.innerWidth - w - pad);
+    var maxY=Math.max(pad, window.innerHeight - h - pad);
+    noBtn.style.left=Math.min(parseFloat(noBtn.style.left)||pad, maxX)+'px';
+    noBtn.style.top=Math.min(parseFloat(noBtn.style.top)||pad, maxY)+'px';
+  });
+
+  /* ----- YES -> show form ----- */
+  function show(id){
+    ['ask','planView','doneView'].forEach(function(v){
+      document.getElementById(v).classList.add('hidden');
+    });
+    var el=document.getElementById(id);
+    el.classList.remove('hidden');
+    el.classList.remove('view'); void el.offsetWidth; el.classList.add('view');
+  }
+
+  function burst(){
+    var pieces=['💛','☕','🤎','✨','🧡'];
+    for(var i=0;i<26;i++){
+      (function(){
+        var c=document.createElement('div');
+        c.className='confetti';
+        c.textContent=pieces[Math.floor(Math.random()*pieces.length)];
+        c.style.left=(Math.random()*100)+'vw';
+        c.style.animationDuration=(2.4+Math.random()*2.2)+'s';
+        c.style.animationDelay=(Math.random()*.4)+'s';
+        document.body.appendChild(c);
+        setTimeout(function(){c.remove();},5200);
+      })();
+    }
+  }
+
+  yesBtn.addEventListener('click',function(){
+    burst();
+    show('planView');
+    var d=document.getElementById('date');
+    var today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+    d.min=today.toISOString().slice(0,10);
+  });
+
+  /* ----- format helpers ----- */
+  function prettyDate(v){
+    if(!v) return v;
+    var p=v.split('-'); var dt=new Date(p[0],p[1]-1,p[2]);
+    return dt.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  }
+  function prettyTime(v){
+    if(!v) return v;
+    var p=v.split(':'); var dt=new Date(); dt.setHours(p[0],p[1]);
+    return dt.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+  }
+
+  /* ----- SEND / save ----- */
+  var sendBtn=document.getElementById('sendBtn');
+  var err=document.getElementById('err');
+  var lastTxt='';
+
+  function buildTxt(o){
+    return [
+      'Coffee date — she said YES 💛',
+      '--------------------------------',
+      'Day:        '+o.prettyDate,
+      'Time:       '+o.prettyTime,
+      'Place:      '+o.place,
+      '',
+      'Raw date:   '+o.date,
+      'Raw time:   '+o.time,
+      'Answered:   '+o.submitted,
+      ''
+    ].join('\n');
+  }
+
+  sendBtn.addEventListener('click',function(){
+    var date=document.getElementById('date').value;
+    var time=document.getElementById('time').value;
+    var place=document.getElementById('place').value.trim();
+    err.textContent='';
+    if(!date || !time || !place){
+      err.textContent='Just fill in the day, time, and place 🙂';
+      return;
+    }
+    var payload={
+      answer:'YES',
+      date:date, time:time, place:place,
+      prettyDate:prettyDate(date), prettyTime:prettyTime(time),
+      submitted:new Date().toString()
+    };
+    lastTxt=buildTxt(payload);
+
+    document.getElementById('rDate').textContent=payload.prettyDate;
+    document.getElementById('rTime').textContent=payload.prettyTime;
+    document.getElementById('rPlace').textContent=payload.place;
+
+    sendBtn.disabled=true; sendBtn.textContent='Sending…';
+
+    saveAnswer(payload).then(function(){
+      burst(); show('doneView');
+    }).catch(function(){
+      // Nothing reachable (offline, or opened as a plain file) -> keep a .txt copy.
+      downloadTxt();
+      burst(); show('doneView');
+    }).then(function(){
+      sendBtn.disabled=false; sendBtn.textContent='Send it 💌';
+    });
+  });
+
+  // Sends the answer wherever it can:
+  //  1) email via FormSubmit if NOTIFY_EMAIL is set (works on GitHub Pages)
+  //  2) otherwise the local server.py -> responses.txt
+  function saveAnswer(payload){
+    if (NOTIFY_EMAIL) {
+      return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(NOTIFY_EMAIL), {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({
+          _subject: 'She said YES to coffee \uD83D\uDC9B',
+          Day: payload.prettyDate,
+          Time: payload.prettyTime,
+          Place: payload.place,
+          Answered: payload.submitted
+        })
+      }).then(function(r){ if(!r.ok) throw new Error('mail'); return r.json(); });
+    }
+    return fetch('/save',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).then(function(r){ if(!r.ok) throw new Error('srv'); return r.json(); });
+  }
+
+  function downloadTxt(){
+    try{
+      var blob=new Blob([lastTxt],{type:'text/plain'});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url; a.download='coffee-date.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){URL.revokeObjectURL(url);},1500);
+    }catch(e){}
+  }
+
+})();
+</script>
+</body>
+</html>
